@@ -2,11 +2,10 @@
 
 namespace Database\Factories;
 
-use App\Models\Model;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Model>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
  */
 class LocationFactory extends Factory
 {
@@ -17,19 +16,23 @@ class LocationFactory extends Factory
      */
     public function definition(): array
     {
-        $officeLocation = [
-            'Main Office - Floor 1',
-            'Annex Building - IT Department',
-            'Warehouse - Storage Area A',
-            'Remote Office - Manila',
-            'Branch Office - Cebu',
-            'Data Center - Server Room 1',
-            'Conference Room 3',
+        $officeLocations = [
+            'HR Department',
+            'IT Department',
+            'Finance Department',
+            'Marketing Department',
+            'Sales Department',
+            'Customer Support',
+            'Research and Development',
+            'Administration',
+            'Warehouse',
+            'Executive Office',
+            'Conference Room',
+            'Reception Area',
         ];
-
         return [
-            'name' => $this->faker->randomElement($officeLocation),
-            'address' => $this->faker->address(),
+            'name' => $this->faker->unique()->randomElement($officeLocations),
+            'address' => $this->faker->address()
         ];
     }
 }

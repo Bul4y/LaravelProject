@@ -4,36 +4,43 @@ import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-vue-next';
+import { Link, usePage } from '@inertiajs/vue3';
+import { BookOpen, Folder, LayoutGrid, ChartBarStacked, Laptop, MapPinHouse, Factory } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
+import { computed } from 'vue';
 
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
         url: '/dashboard',
         icon: LayoutGrid,
+        roles: ['super_admin','inventory_manager','inventory_user'],
+    },
+    {
+        title: 'Asset',
+        url: '/assets',
+        icon: Laptop,
+        roles: ['super_admin','inventory_user'],
     },
     {
         title: 'Category',
         url: '/categories',
-        icon: LayoutGrid,
+        icon: ChartBarStacked,
+        roles: ['super_admin'],
     },
     {
         title: 'Location',
-        url: '/location',
-        icon: LayoutGrid,
-    },
-    {
-        title: 'Asset',
-        url: '/asset',
-        icon: LayoutGrid,
+        url: '/locations',
+        icon: MapPinHouse,
+        roles: ['super_admin','inventory_manager'],
     },
     {
         title: 'Manufacturer',
-        url: '/manufacturer',
-        icon: LayoutGrid,
+        url: '/manufacturers',
+        icon: Factory,
+        roles: ['super_admin','inventory_manager'],
     },
+    
 ];
 
 const footerNavItems: NavItem[] = [
@@ -48,6 +55,18 @@ const footerNavItems: NavItem[] = [
         icon: BookOpen,
     },
 ];
+
+const page= usePage();
+const userRole = computed(() => page.props.auth?.user?.role || 'null');
+
+const filteredNavItems = computed(() => {
+    return mainNavItems.filter((item) => {
+        if (!item.roles) {
+            return true; // No roles means it's accessible to everyone
+        }
+        return item.roles.includes(userRole.value);
+    })
+});
 </script>
 
 <template>
@@ -65,7 +84,7 @@ const footerNavItems: NavItem[] = [
         </SidebarHeader>
 
         <SidebarContent>
-            <NavMain :items="mainNavItems" />
+            <NavMain :items="filteredNavItems" />
         </SidebarContent>
 
         <SidebarFooter>

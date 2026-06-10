@@ -2,10 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\categoryController;
-use App\Http\Controllers\locationController;
-use App\Http\Controllers\manufacturerController;
-use App\Http\Controllers\assetController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\AssetController;
+use App\Http\Controllers\LocationController;
+use App\Http\Controllers\ManufacturerController;
+use App\Http\Middleware;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -15,10 +16,24 @@ Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('categories', [categoryController::class, 'index'])->name('categories');
-Route::get('location', [locationController::class, 'index'])->name('location');
-Route::get('manufacturer', [manufacturerController::class, 'index'])->name('manufacturer');
-Route::get('asset', [assetController::class, 'index'])->name('asset');
+Route::middleware(['auth', 'verified', 'role:super_admin'])->group(function () {
+  Route::resource('categories', CategoryController::class)->except(['create', 'edit']);
+});
+
+Route::middleware(['auth', 'verified', 'role:super_admin,inventory_manager'])->group(function () {
+    Route::resource('manufacturers', ManufacturerController::class)->except(['create', 'edit']);
+    Route::resource('locations', LocationController::class)->except(['create', 'edit']);
+});
+
+Route::middleware(['auth', 'verified', 'role:super_admin,inventory_user'])->group(function () {
+    Route::resource('assets', AssetController::class)->except(['create', 'edit']);
+});
+
+Route::resource('categories', CategoryController::class)->except(['create', 'edit']);
+Route::resource('manufacturers', ManufacturerController::class)->except(['create', 'edit']);
+Route::resource('locations', LocationController::class)->except(['create', 'edit']);
+Route::resource('assets', AssetController::class)->except(['create', 'edit']);
+
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

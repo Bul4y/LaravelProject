@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders;
+namespace App\Enums;
 
 enum userRole: string
 {
@@ -11,9 +11,9 @@ enum userRole: string
     public function label(): string
     {
         return match ($this) {
-            self::SUPER_ADMIN => 'super_admin',
-            self::INVENTORY_MANAGER => 'inventory_manager',
-            self::INVENTORY_USER => 'inventory_user',
+            self::SUPER_ADMIN => 'Super Admin',
+            self::INVENTORY_MANAGER => 'Inventory Manager',
+            self::INVENTORY_USER => 'Inventory User',
         };
     }
 }

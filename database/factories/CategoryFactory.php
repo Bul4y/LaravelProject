@@ -2,11 +2,10 @@
 
 namespace Database\Factories;
 
-use App\Models\Model;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Model>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
  */
 class CategoryFactory extends Factory
 {
@@ -17,20 +16,21 @@ class CategoryFactory extends Factory
      */
     public function definition(): array
     {
-
-        $deviceCategories = [
-            'Laptop',
-            'Desktop PC',
-            'Monitor',
-            'Printer',
-            'Network Switch',
-            'Router',
-            'Server',
-            'Mobile Phone',
+        $deviceCategories =[
+            'Laptops',
+            'Desktops',
+            'Monitors',
+            'Printers',
+            'Networking Equipment',
+            'Storage Devices',
+            'Mobile Devices',
+            'Peripherals',
+            'Servers',
+            'Software Licenses'
         ];
-        
+
         return [
-            'name' => $this->faker->randomElement($deviceCategories),
+            'name' => $this->faker->unique()->randomElement($deviceCategories),
             'description' => $this->faker->sentence()
         ];
     }

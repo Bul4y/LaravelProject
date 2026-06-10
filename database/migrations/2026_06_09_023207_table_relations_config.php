@@ -12,29 +12,37 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('assets', function (Blueprint $table) {
+
+            // Add category_id column and foreign key constraint
+            // ->constrained() will assume 'categories' table and 'id' column
+            // ->onDelete('set null') means if a category is deleted, assets in that category will have category_id set to null
             $table->foreignId('category_id')
-            ->nullable()
-            ->constrainted()
-            ->onDelete('set null')
-            ->after('id');
+                  ->nullable()
+                  ->constrained()
+                  ->onDelete('set null')
+                  ->after('id'); // Place it after the 'id' column
 
+            // Add location_id column and foreign key constraint
             $table->foreignId('location_id')
-            ->nullable()
-            ->constrainted()
-            ->onDelete('set null')
-            ->after('category_id');
+                  ->nullable()
+                  ->constrained()
+                  ->onDelete('set null')
+                  ->after('category_id'); // Place it after the 'category_id' column
 
+            // Add manufacturer_id column and foreign key constraint
             $table->foreignId('manufacturer_id')
-            ->nullable()
-            ->constrainted()
-            ->onDelete('set null')
-            ->after('location_id');
+                  ->nullable()
+                  ->constrained()
+                  ->onDelete('set null')
+                  ->after('location_id'); // Place it after the 'location_id' column
 
+            // Add assigned_to_user_id column and foreign key constraint
+            // This assumes Laravel's default 'users' table exists.
             $table->foreignId('assigned_to_user_id')
-            ->nullable()
-            ->constrainted('users')
-            ->onDelete('set null')
-            ->after('notes');
+                  ->nullable()
+                  ->constrained('users') // Explicitly specify 'users' table
+                  ->onDelete('set null')
+                  ->after('notes'); // Place it after 'notes' or where appropriate
         });
     }
 
@@ -44,10 +52,14 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('assets', function (Blueprint $table) {
+             // Drop foreign key constraints first
             $table->dropForeign(['category_id']);
             $table->dropForeign(['location_id']);
             $table->dropForeign(['manufacturer_id']);
             $table->dropForeign(['assigned_to_user_id']);
+
+            // Then drop the columns
+            $table->dropColumn(['category_id', 'location_id', 'manufacturer_id', 'assigned_to_user_id']);
         });
     }
 };
